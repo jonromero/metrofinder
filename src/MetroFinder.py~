@@ -1,0 +1,41 @@
+import javax.microedition.midlet.MIDlet;
+import javax.microedition.lcdui.Command;
+import javax.microedition.lcdui.CommandListener;
+import javax.microedition.lcdui.Form;
+import javax.microedition.lcdui.Display;
+import javax.microedition.lcdui.Displayable;
+
+// Generated class. Modify.
+public final class MetroFinder extends MIDlet implements CommandListener {
+    private final Command exitCommand;
+    private final Form mainForm;
+
+    public MetroFinder() {
+	// Constructor. Place your code here.   
+        mainForm = new Form("MetroFinder");
+        exitCommand = new Command("Exit", Command.EXIT, 1);
+        mainForm.addCommand(exitCommand);
+        mainForm.setCommandListener(this);
+        Display.getDisplay(this).setCurrent(mainForm);
+    }
+    
+    protected void startApp() {
+        // Place your code here.
+    }
+    
+    protected void pauseApp() {
+        // Place your code here.
+    }
+    
+    protected void destroyApp(boolean unconditional) {
+        // Place your code here.
+    }
+    
+    public void commandAction(Command c, Displayable d) {
+        // Place your code here.
+        if (c == exitCommand) {
+            destroyApp(false);
+            notifyDestroyed();
+        }
+    }
+}

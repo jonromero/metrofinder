@@ -1,0 +1,188 @@
+
+/** 
+ * 
+ * Algorithm that finds how many nodes we are away
+ * 
+ * @author Jon Vlachoyiannis (jon@emotionull.com)
+ * Under GPL
+ * 01/03/2009
+ */
+
+package BuiltInFunction;
+
+//import java.io.*;
+
+import Procedure.*;
+import FunctionConstants.*;
+import Scheme.*;
+import Environment.*;
+import Pair.*;
+import U.*;
+
+public class BuiltInFunction
+    extends Procedure implements FunctionConstants {
+
+	/**
+	 * Minimum number of args for the function/procedur.
+	 */
+	private int minArgs;
+
+	private int maxArgs;
+
+	private int idNumber;
+	
+	public static Double ZERO = new Double(0.0);
+	public static Double ONE = new Double(1.0);
+
+	private BuiltInFunction() {
+		
+	}	
+	public BuiltInFunction(int id, int minArgs, int maxArgs) {
+		this.idNumber = id;
+		this.minArgs = minArgs;
+		this.maxArgs = maxArgs;
+	}
+	
+	public static Double num(double x) { 
+		return (x == 0.0) ? ZERO : (x == 1.0) ? ONE : new Double(x); 
+	}
+    
+    // No floating for midp 1.0
+    public static double num(Object x) { 
+	// FIXME: Couldn't find Number class. Maybe make one?
+	//if (x instanceof Number) {
+	//	    return Double.valueOf(x).doubleValue();
+	return num(x);
+	//		} else {
+	//return num(SchemeUtil.error("expected a number, got: " + x));
+	//	} // End of the if - else
+    }
+	
+	public static Object numCompute(Object args, char op, double result) {		
+		if (args == null) {
+			switch (op) {
+				case '-':
+					return num(0 - result);
+				case '/':
+					return num(1 / result);
+				default:
+					return num(result);
+			}
+		} else {
+			// Perform the operation against the linked list
+			while (args instanceof Pair) {
+				double x = num(first(args));
+				// Traverse
+				args = rest(args);
+				switch (op) {
+					case 'X':
+						if (x > result)
+							result = x;
+						break;
+					case 'N':
+						if (x < result)
+							result = x;
+						break;
+					case '+':
+						result += x;
+						break;
+					case '-':
+						result -= x;
+						break;
+					case '*':
+						result *= x;
+						break;
+					case '/':
+						result /= x;
+						break;
+					default:
+					    //SchemeUtil.error("Internal Error: unrecognized op: " + op);
+						break;
+					}
+			} // end of while
+			return num(result);
+		}
+	}
+	
+	/** 
+	 * Apply a primitive to a list of arguments.
+	 */
+	public Object apply(Scheme interp, Object args) {
+		// First make sure there are the right number of arguments. 
+		int nArgs = length(args);
+		if (nArgs < minArgs) {
+		    return error("too few args");
+		} else if (nArgs > maxArgs) {
+			return error("too many args");
+		} // End of the If
+
+		Object x = first(args);
+		Object y = second(args);
+
+		switch (idNumber) {
+			case PLUS:
+				return numCompute(args, '+', 0.0);
+			case MINUS:
+				return numCompute(rest(args), '-', num(x));
+			case TIMES:
+				return numCompute(args, '*', 1.0);
+			case DIVIDE:
+				return numCompute(rest(args), '/', num(x));			
+			case THIRD:
+				return third(x);
+			case CONS:
+				return cons(x, y);
+			case CAR:
+				return first(x);
+			case CDR:
+				return rest(x);
+			case CXR:
+			    //FIXXXME: for (int i = this.getName().length() - 2; i >= 1; i--) {
+			    //		x = (this.getName().charAt(i) == 'a') ? first(x) : rest(x);
+			    //}
+				return x;
+			default:
+				return error("internal error: unknown primitive: " + this
+						+ " applied to " + args);
+		}
+	} // End of the Apply
+	
+	/**
+	 * Define the procedures for the lisp environment.
+	 */
+	public static Environment installBuiltInFunctions(Environment env)  {
+	    int n = Integer.MAX_VALUE;
+	    env
+	    
+	     .defineBuiltInProc("cons",     CONS,      2)	     
+	    
+	     .defineBuiltInProc("*",       	TIMES,     0, n)	     
+	     .defineBuiltInProc("+",       	PLUS,      0, n)
+	     .defineBuiltInProc("-",       	MINUS,     1, n)
+	     .defineBuiltInProc("/",       	DIVIDE,    1, n)
+	    
+	     .defineBuiltInProc("caaaar",         CXR,       1)
+	     .defineBuiltInProc("caaadr",         CXR,       1)
+	     .defineBuiltInProc("caaar",          CXR,       1)
+	     .defineBuiltInProc("caadar",         CXR,       1)
+	     .defineBuiltInProc("caaddr",         CXR,       1)
+	     .defineBuiltInProc("caadr",          CXR,       1)
+	     .defineBuiltInProc("caar",           CXR,       1)	     
+	     .defineBuiltInProc("caddr",     	THIRD,       1)
+	     .defineBuiltInProc("cadr",  	    SECOND,      1)	   	     
+	     .defineBuiltInProc("cdaaar",         CXR,       1)
+	     .defineBuiltInProc("cdadr",          CXR,       1)
+	     .defineBuiltInProc("cdar",           CXR,       1)
+	     .defineBuiltInProc("cddaar",         CXR,       1)
+	     .defineBuiltInProc("cddr",           CXR,       1)
+	     
+	     .defineBuiltInProc("car",     	      CAR,       1)
+	     .defineBuiltInProc("cdr",     	      CDR,       1)	    
+	    	     	
+	     .defineBuiltInProc("*",       	TIMES,     0, n)	     
+	     .defineBuiltInProc("+",       	PLUS,      0, n)
+	     .defineBuiltInProc("-",       	MINUS,     1, n)
+	     .defineBuiltInProc("/",       	DIVIDE,    1, n);
+	    return env;
+	}	
+}
