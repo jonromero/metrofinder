@@ -14,11 +14,14 @@ package Algorithm;
 import java.util.*;
 
 public class Algorithm {
-    public final String nodes_green[] = {"Peiraias", "Falhro", "Mosxato", "Tauros", "Petralona", "Thiseio", "Monasthraki", "Omonoia", "Panepistimio", "Viktoria", "Attikh", "Agios Nikolaos", "Katw Pathsia", "Agios Eleu8erios", "Perissos", "Peukakia", "Nea Ionia", "Irakleio", "Eirhnh", "Neratziotisa", "Marousi", "KAT", "Khfisia"};
+    public final String nodes_green[] = {"Πειραιάς", "Φάληρο", "Μόσχατο", "Ταύρος", "Πετράλωνα", "Θησείο", "Μοναστηράκι", "Ομόνοια", "Πανεπιστήμιο", "Βικτώρια", "Αττική", "Άγιος Νικόλαος", "Κάτω Πατήσια", "Άγιος Ελευθέριος", "Περισσός", "Πευκάκια", "Νέα Ιονία", "Ηράκλειο", "Ειρήνη", "Νερατζιώτισσα", "Μαρούσι", "ΚΑΤ", "Κηφισιά"};
     
-	public final String nodes_blue[] = {"Aigalew", "Elaiwnas", "Keramaikos", "Monastiraki", "Syntagma", "Euagelismos", "Abelokhpoi", "Panormou", "Katexakh", "E8nikh Amuna", "Xalandri", "Doukisshs Plakentias", "???", "Painia-Kantza", "Korwpi"};
+	public final String nodes_blue[] = {"Αιγάλεω", "Ελαιώνας", "Κεραμαϊκός", "Μοναστηράκι", "Σύνταγμα", "Ευαγγελισμός", "Αμπελόκηποι", "Πανόρμου", "Κατεχάκη", "Εθνική Άμυνα", "Χαλάνδρι", "Δουκίσσης Πλακεντιάς", "Άγνωστο", "Παιανία-Κάτζα", "Κορωπί"};
     
-	public final String nodes_red[] = {"Agios Dhmitrios", "Dafnh", "Agios Ioannis", "Neos Kosmos", "Suggrou-Fix", "Akropolh", "Sudagma", "Panepisthmio", "Omonoia", "Metaxourgio", "Sta8mos Larisshs", "Attikh", "Sepolia", "Agios Adwnios"};
+	public final String nodes_red[] = {"Άγιος Δημήτριος", "Δάφνη", "Άγιος Ιωάννης", "Νέος Κόσμος", "Συγγρού-Φιξ", "Ακρόπολη", "Σύνταγμα", "Πανεπιστήμιο", "Ομόνοια", "Μεταξουργείο", "Σταθμός Λαρίσσης", "Αττική", "Σεπόλια", "Άγιος Αντώνιος"};
+
+
+	private Vector results = new Vector();
 
 	public Algorithm() {
 
@@ -34,8 +37,6 @@ public class Algorithm {
 		int n1 = 0;
 		int n2 = 0;
 
-		Vector results = new Vector();
-
 		final int nd_intsec_green_blue = 6;
 		final int nd_intsec_blue_green = 3;
 		final int nd_intsec_red_blue = 6;
@@ -43,85 +44,94 @@ public class Algorithm {
 		final int nd_intsec_red_green = 8;
 		final int nd_intsec_green_red = 8;
 
-		if (src < nodes_green.length){
+		results.removeAllElements();
+
+		if (src < nodes_green.length -1){
 			node_color_start = 0;
 			node_start = src;
 		}
 		
-		else if (src < nodes_blue.length) {
+		else if (src < nodes_green.length -1 + nodes_blue.length -1 ) {
 			node_color_start = 1;
 			node_start = src - nodes_green.length - 1;
 		}
 		
-		else if (src < nodes_red.length) {
+		else {
 			node_color_start = 2;
 			node_start = src - nodes_green.length - 1 - nodes_blue.length -1;
 
 		}
 
-		if (dest < nodes_green.length){
+		if (dest < nodes_green.length -1){
 			node_color_end = 0;
 			node_end = dest;
 		}
 		
-		else if (dest < nodes_blue.length) {
+		else if (dest < nodes_green.length -1 + nodes_blue.length -1 ) {
 			node_color_end = 1;
 			node_end = dest - nodes_green.length - 1;
 		}
 		
-		else if (dest < nodes_red.length) {
+		else {
 			node_color_end = 2;
 			node_end = dest - nodes_green.length - 1 - nodes_blue.length -1;
 
 		}
 
+		//System.out.println("DEBUG: " + dest);
+		//System.out.println("DEBUG: " + nodes_green.length);
+		//System.out.println("DEBUG: " + nodes_blue.length);
 
+		//System.out.println("DEBUG: " + node_color_start);
+		//System.out.println("DEBUG: " + node_color_end);
+	
 		// Algorithm
 		if (node_color_start == node_color_end) {
-			n = calcTotalNodes(node_start, node_end);
+			n = calcTotalNodes(node_start, node_end, node_color_start);
 		}
 
 		// Green / Blue
 		else if (node_color_start == 0 && node_color_end == 1) {
-			n1 = calcTotalNodes(node_start, nd_intsec_green_blue);
-			n2 = calcTotalNodes(nd_intsec_blue_green, node_end);
+			n1 = calcTotalNodes(node_start, nd_intsec_green_blue, 0);
+			n2 = calcTotalNodes(nd_intsec_blue_green, node_end, 1);
+
 			n = math_abs(n1) + math_abs(n2);
 		}
 
 		// Blue / Green
 		else if (node_color_start == 1 && node_color_end == 0) {
-			n1 = calcTotalNodes(node_start, nd_intsec_blue_green);
-			n2 = calcTotalNodes(nd_intsec_green_blue, node_end);
+			n1 = calcTotalNodes(node_start, nd_intsec_blue_green, 1);
+			n2 = calcTotalNodes(nd_intsec_green_blue, node_end, 0);
 			n = math_abs(n1) + math_abs(n2);
 		}
 
 		// Green / Red
 		else if (node_color_start == 0 && node_color_end == 2) {
-			n1 = calcTotalNodes(node_start, nd_intsec_green_red);
-			n2 = calcTotalNodes(nd_intsec_red_green, node_end);
+			n1 = calcTotalNodes(node_start, nd_intsec_green_red, 0);
+			n2 = calcTotalNodes(nd_intsec_red_green, node_end, 2);
 			n = math_abs(n1) + math_abs(n2);
 		}
 
 		// Red / Green
 		else if (node_color_start == 2 && node_color_end == 0) {
-			n1 = calcTotalNodes(node_start, nd_intsec_red_green);
-			n2 = calcTotalNodes(nd_intsec_green_red, node_end);
+			n1 = calcTotalNodes(node_start, nd_intsec_red_green, 2);
+			n2 = calcTotalNodes(nd_intsec_green_red, node_end, 0);
 			n = math_abs(n1) + math_abs(n2);
 		}
 
 
 		// Blue / Red
 		else if (node_color_start == 1 && node_color_end == 2) {
-			n1 = calcTotalNodes(node_start, nd_intsec_blue_red);
-			n2 = calcTotalNodes(nd_intsec_red_blue, node_end);
+			n1 = calcTotalNodes(node_start, nd_intsec_blue_red, 1);
+			n2 = calcTotalNodes(nd_intsec_red_blue, node_end, 2);
 			n = math_abs(n1) + math_abs(n2);
 		}
 
 
 		// Red / Blue
 		else if (node_color_start == 2 && node_color_end == 1) {
-			n1 = calcTotalNodes(node_start, nd_intsec_red_blue);
-			n2 = calcTotalNodes(nd_intsec_blue_red, node_end);
+			n1 = calcTotalNodes(node_start, nd_intsec_red_blue, 2);
+			n2 = calcTotalNodes(nd_intsec_blue_red, node_end, 1);
 			n = math_abs(n1) + math_abs(n2);
 		}
 
@@ -129,20 +139,59 @@ public class Algorithm {
 		// I miss Python's multiple returning system :(
 		// and I refuse to create a struct :D
 
-		results.addElement("Total nodes to change:" + String.valueOf(n));
-		results.addElement("Move " + String.valueOf(n1) + " until ");
-		results.addElement("and then " + String.valueOf(n2) + " until ");
+		if (n1 != 0)
+			results.insertElementAt("Άλλαξε γραμμή μετά από " + String.valueOf(n1) + " στάσεις", 0);
+		else 
+			results.insertElementAt("Δεν χρειάζεται να αλλάξεις γραμμή", 0);
 
-		for (int i=0; i < node_start; i++)
-			results.addElement("Node" + nodes_green[i] + ": X minutes");
-		
+		results.insertElementAt("Σύνολο στάσεων: " + String.valueOf(math_abs(n)),1);
+		results.insertElementAt("Μέσος χρόνος: x λεπτά", 2);
 
 		return results;
 	}
 
+		
+	// this is hideous...
+	private int calcTotalNodes(int nd_st, int nd_en, int line) {
+		String line_color = "ΗΣΑΠ";
+		String[] nodes = nodes_green;
 
-	private int calcTotalNodes(int nd_st, int nd_en) {
+		// lets find the line's color
+		if(line == 0) {
+			line_color = "ΗΣΑΠ";
+			nodes = nodes_green;
+		}
+		else if(line == 1) {
+			line_color = "Μετρο[Μπλε]"; 
+			nodes = nodes_blue;
+
+		}
+		else if(line == 2) {
+			line_color = "Μετρο[Κόκκινο]";
+			nodes = nodes_red;
+		}
+
+		results.addElement("---------------------");
+
+		// lets find the direction
+		if (nd_st < nd_en) {
+			results.addElement("Γραμμή " + line_color + " (προς " +  nodes[nodes.length-1] + " )");
+ 			results.addElement("---------------------");
+
+			for (int i=nd_st; i < nd_en; i++)
+				results.addElement(" + " + nodes[i]);				
+		}
+		
+		else { 
+			results.addElement("Γραμμή " + line_color + " (προς " +  nodes[0] + " )");
+			results.addElement("---------------------");
+
+			for (int i=nd_st; i >= nd_en; i--)
+				results.addElement(" + " + nodes[i]);				
+		}
+
 		return nd_en - nd_st;
+
 	}
 
 	// So we don't need CLDC 1.1

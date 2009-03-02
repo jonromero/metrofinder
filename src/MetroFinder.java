@@ -16,7 +16,6 @@ import Algorithm.*;
 public final class MetroFinder extends MIDlet implements CommandListener {
     private final Command exitCommand;
     private final Command okCommand;
-	private final Command helpCommand;
 	private final Command srcCommand;
 	private final Command calcCommand;
 	private final Command nextCommand;
@@ -35,17 +34,25 @@ public final class MetroFinder extends MIDlet implements CommandListener {
 
     public MetroFinder() {
         mainForm = new Form("MetroFinder");
-        exitCommand = new Command("Exit", Command.EXIT, 4);
-		helpCommand = new Command("Help", Command.HELP, 3);
-		aboutCommand = new Command("About", Command.SCREEN, 2);
-		okCommand = new Command("OK", Command.OK, 8);
-		srcCommand =  new Command("Source", Command.SCREEN, 1);
-		calcCommand =  new Command("Calculate", Command.SCREEN, 4);
-        nextCommand = new Command("OK", Command.SCREEN, 2);
-        backCommand = new Command("Back", Command.SCREEN, 1);
+        exitCommand = new Command("Έξοδος", Command.EXIT, 5);
+		aboutCommand = new Command("Σχετικά", Command.SCREEN, 3);
+		okCommand = new Command("Προορισμός", Command.OK, 8);
+		srcCommand =  new Command("Αφετηρία", Command.SCREEN, 2);
+		calcCommand =  new Command("Υπολογισμός", Command.OK, 1);
+        nextCommand = new Command("Προορισμός", Command.OK, 2);
+        backCommand = new Command("Πίσω", Command.SCREEN, 4);
 
+		StringItem infoTxt;
+		StringItem infoTxt2;
+		
+		infoTxt = new StringItem("Καλώς ήρθες στο MetroFinder v 1.0\n\n", "Το MetroFinder σου δείχνει πόσες στάσεις Μετρο και Ηλεκτρικού έχεις μέχρι τον προορισμό σου, πόση ώρα και πόσες αλλαγές μεταφορικών μέσων πρέπει να κάνεις\n\n");
+
+		infoTxt2 = new StringItem("Χρήση","Επέλεξε το <Μenu>, μετά την αφετηρία, τον προορισμό σου και επέλεξε <Υπολογισμό>. \nΓια updates, έλεγξε το <Σχετικά>.\n\nEnjoy");
+
+		mainForm.append(infoTxt);
+		mainForm.append(infoTxt2);
+		
         mainForm.addCommand(exitCommand);
-		mainForm.addCommand(helpCommand);
 		mainForm.addCommand(aboutCommand);
 		//mainForm.addCommand(okCommand);
 		mainForm.addCommand(srcCommand);
@@ -83,11 +90,7 @@ public final class MetroFinder extends MIDlet implements CommandListener {
             notifyDestroyed();
         }
 		else if(c == aboutCommand)
-			displayHelp();
- 		else if(c == helpCommand)
-			javax.microedition.lcdui.Display.getDisplay(this).setCurrent(displayAbout());
-
-		//displayAbout();
+			displayAbout();
  		else if(c == okCommand) 
 			displayMain();
 
@@ -106,59 +109,29 @@ public final class MetroFinder extends MIDlet implements CommandListener {
     }
 
 	void initNodes() {
-		//		totalNodes.push(Algo.nodes_blue);
-		//totalNodes.push(Algo.nodes_red);
-
-		startNode = new ChoiceGroup("Select Start", ChoiceGroup.EXCLUSIVE);
-		endNode =  new ChoiceGroup("Select Destination", ChoiceGroup.EXCLUSIVE);
+		startNode = new ChoiceGroup("Επιλογή αφετηρίας", ChoiceGroup.EXCLUSIVE);
+		endNode =  new ChoiceGroup("Επιλογή προορισμού", ChoiceGroup.EXCLUSIVE);
 
 		int i;
 
-		for (i=0; i < Algo.nodes_green.length-1; i++){
+		for (i=0; i < Algo.nodes_green.length; i++){
 			startNode.append(Algo.nodes_green[i], null);
 			endNode.append(Algo.nodes_green[i], null);
 		}
 
-		for (i=0; i < Algo.nodes_blue.length-1; i++){
+		for (i=0; i < Algo.nodes_blue.length; i++){
 			startNode.append(Algo.nodes_blue[i], null);
 			endNode.append(Algo.nodes_blue[i], null);
 		}
 
-		for (i=0; i < Algo.nodes_red.length-1; i++){
+		for (i=0; i < Algo.nodes_red.length; i++){
 			startNode.append(Algo.nodes_red[i], null);
 			endNode.append(Algo.nodes_red[i], null);
 		}
 	}
-	public void displayHelp() {
-	}
-
-	public void processForm() {
-		// process Form
-	}
-
-    private javax.microedition.lcdui.TextBox displayAbout()
-    {
-		txtCode = new javax.microedition.lcdui.TextBox("Lips Language System  - by Jon V\n I am ready!\n", "", 120, 0x0);
-		txtCode.addCommand(exitCommand);
-		txtCode.addCommand(okCommand);
-		txtCode.setCommandListener(this);
-		
-		return txtCode;
-			
-	}
 
 	private void displayMain()
 	{
-		StringItem infoTxt;
-		StringItem infoTxt2;
-		
-		infoTxt = new StringItem("Welcome to MetroFinder v 1.0\n\n", "MetroFinder allows you to check how many stops you have\n and gives you a time approximation for your destination\n\n");
-
-		infoTxt2 = new StringItem("Fast tutorial","Click menu and select a source, the a destionation and then run calculate. If you want to go again, select clear\n\n\nFor updates, check the About. Enjoy");
-
-		mainForm.append(infoTxt);
-		mainForm.append(infoTxt2);
-		
 		mainForm.setCommandListener(this);
 		javax.microedition.lcdui.Display.getDisplay(this).setCurrent(mainForm);
 
@@ -166,12 +139,9 @@ public final class MetroFinder extends MIDlet implements CommandListener {
 
 	private void displaySource()
 	{
-		Form source =  new Form("MetroFinder");
-		StringItem infoTxt;
-		
-		infoTxt = new StringItem("Select Source",null);
-		
-		source.append(infoTxt);
+		Form source = new Form("MetroFinder");
+		initNodes();
+	
 		source.append(startNode);
 		source.addCommand(nextCommand);
 		source.addCommand(backCommand);
@@ -184,12 +154,8 @@ public final class MetroFinder extends MIDlet implements CommandListener {
 
 	private void displayDestination()
 	{
-		Form dest =  new Form("MetroFinder");
-		StringItem infoTxt;
-		
-		infoTxt = new StringItem("Select Destination",null);
-		
-		dest.append(infoTxt);
+		Form dest = new Form("MetroFinder");
+
 		dest.append(endNode);
 		dest.addCommand(calcCommand);
 		dest.addCommand(srcCommand);
@@ -200,7 +166,7 @@ public final class MetroFinder extends MIDlet implements CommandListener {
 
 	private void displayCalculate()
 	{
-		Form result =  new Form("MetroFinder");
+		Form result = new Form("MetroFinder");
 		StringItem infoTxt;
 		//String[] results;
 		Vector results;
@@ -210,16 +176,51 @@ public final class MetroFinder extends MIDlet implements CommandListener {
 		String tmp = "";
 		Enumeration vEnum = results.elements();
 		while(vEnum.hasMoreElements()){
-			tmp += vEnum.nextElement();
+			tmp += "\n" + vEnum.nextElement();
 		}
 		
-		infoTxt = new StringItem("Results\n", tmp);
+		infoTxt = new StringItem("Διαδρομή\n", tmp);
 
 		result.append(infoTxt);
-		result.addCommand(backCommand);
+ 		result.addCommand(backCommand);
 
 		result.setCommandListener(this);
 		javax.microedition.lcdui.Display.getDisplay(this).setCurrent(result);
 	}
+
+	private void displayAbout()
+	{
+		Form about = new Form("MetroFinder");
+
+		StringItem infoTxt;
+		StringItem infoTxt2;
+		StringItem infoTxt3;
+		StringItem infoTxt4;
+		StringItem infoTxt5;
+
+		infoTxt = new StringItem("Καλώς ήρθες στο MetroFinder v 1.0\n\n", "Το MetroFinder σου δείχνει πόσες στάσεις Μετρο και Ηλεκτρικού έχεις μέχρι τον προορισμό σου, πόση ώρα και πόσες αλλαγές μεταφορικών μέσων πρέπει να κάνεις\n\n");
+
+		infoTxt2 = new StringItem("Updates","Η τελευταία έκδοση βρίσκεται εδώ: http://github.com/jonromero/metrofinder/tree/master");
+		
+		infoTxt3 = new StringItem("Website\n","http://jon.is.emotionull.com");
+
+		infoTxt4 = new StringItem("Email\n","jon@emotionull.com");
+
+		infoTxt5 = new StringItem("από τον Γιάννη Βλαχογιάννη (2009)\n","Published under GPL 3.0");
+
+
+		about.append(infoTxt);
+		about.append(infoTxt2);
+		about.append(infoTxt3);
+		about.append(infoTxt4);
+		about.append(infoTxt5);
+
+		about.addCommand(backCommand);
+		
+		about.setCommandListener(this);
+		javax.microedition.lcdui.Display.getDisplay(this).setCurrent(about);
+
+	}
+
 
 }
