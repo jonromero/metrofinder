@@ -14,9 +14,9 @@ package Algorithm;
 import java.util.*;
 
 public class Algorithm {
-    public final String nodes_green[] = {"Πειραιάς", "Φάληρο", "Μόσχατο", "Ταύρος", "Πετράλωνα", "Θησείο", "Μοναστηράκι", "Ομόνοια", "Πανεπιστήμιο", "Βικτώρια", "Αττική", "Άγιος Νικόλαος", "Κάτω Πατήσια", "Άγιος Ελευθέριος", "Περισσός", "Πευκάκια", "Νέα Ιονία", "Ηράκλειο", "Ειρήνη", "Νερατζιώτισσα", "Μαρούσι", "ΚΑΤ", "Κηφισιά"};
+    public final String nodes_green[] = {"Πειραιάς", "Φάληρο", "Μόσχατο", "Ταύρος", "Πετράλωνα", "Θησείο", "Μοναστηράκι", "Ομόνοια", "Πανεπιστήμιο", "Βικτώρια", "Αττική", "Άγιος Νικόλαος", "Κάτω Πατήσια", "Άγιος Ελευθέριος", "Περισσός", "Πευκάκια", "Νέα Ιωνία", "Ηράκλειο", "Ειρήνη", "Νερατζιώτισσα", "Μαρούσι", "ΚΑΤ", "Κηφισιά"};
     
-	public final String nodes_blue[] = {"Αιγάλεω", "Ελαιώνας", "Κεραμαϊκός", "Μοναστηράκι", "Σύνταγμα", "Ευαγγελισμός", "Αμπελόκηποι", "Πανόρμου", "Κατεχάκη", "Εθνική Άμυνα", "Χαλάνδρι", "Δουκίσσης Πλακεντιάς", "Άγνωστο", "Παιανία-Κάτζα", "Κορωπί"};
+	public final String nodes_blue[] = {"Αιγάλεω", "Ελαιώνας", "Κεραμαϊκός", "Μοναστηράκι", "Σύνταγμα", "Ευαγγελισμός", "Μέγαρο Μουσικής", "Αμπελόκηποι", "Πανόρμου", "Κατεχάκη", "Εθνική Άμυνα", "Χαλάνδρι", "Δουκίσσης Πλακεντιάς", "Παλλήνη", "Παιανία-Κάντζα", "Κορωπί", "Αεροδρόμιο"};
     
 	public final String nodes_red[] = {"Άγιος Δημήτριος", "Δάφνη", "Άγιος Ιωάννης", "Νέος Κόσμος", "Συγγρού-Φιξ", "Ακρόπολη", "Σύνταγμα", "Πανεπιστήμιο", "Ομόνοια", "Μεταξουργείο", "Σταθμός Λαρίσσης", "Αττική", "Σεπόλια", "Άγιος Αντώνιος"};
 
@@ -53,12 +53,12 @@ public class Algorithm {
 		
 		else if (src < nodes_green.length -1 + nodes_blue.length -1 ) {
 			node_color_start = 1;
-			node_start = src - nodes_green.length - 1;
+			node_start = src - nodes_green.length;
 		}
 		
 		else {
 			node_color_start = 2;
-			node_start = src - nodes_green.length - 1 - nodes_blue.length -1;
+			node_start = src - nodes_green.length - nodes_blue.length;
 
 		}
 
@@ -69,12 +69,12 @@ public class Algorithm {
 		
 		else if (dest < nodes_green.length -1 + nodes_blue.length -1 ) {
 			node_color_end = 1;
-			node_end = dest - nodes_green.length - 1;
+			node_end = dest - nodes_green.length;
 		}
 		
 		else {
 			node_color_end = 2;
-			node_end = dest - nodes_green.length - 1 - nodes_blue.length -1;
+			node_end = dest - nodes_green.length - nodes_blue.length;
 
 		}
 
@@ -140,7 +140,7 @@ public class Algorithm {
 		// and I refuse to create a struct :D
 
 		if (n1 != 0)
-			results.insertElementAt("Άλλαξε γραμμή μετά από " + String.valueOf(n1) + " στάσεις", 0);
+			results.insertElementAt("Άλλαξε γραμμή μετά από " + String.valueOf(math_abs(n1)) + " στάσεις", 0);
 		else 
 			results.insertElementAt("Δεν χρειάζεται να αλλάξεις γραμμή", 0);
 
@@ -178,7 +178,7 @@ public class Algorithm {
 			results.addElement("Γραμμή " + line_color + " (προς " +  nodes[nodes.length-1] + " )");
  			results.addElement("---------------------");
 
-			for (int i=nd_st; i < nd_en; i++)
+			for (int i=nd_st; i < nd_en+1; i++)
 				results.addElement(" + " + nodes[i]);				
 		}
 		
